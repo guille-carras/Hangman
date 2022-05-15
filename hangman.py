@@ -13,3 +13,16 @@ def read_data_search_keyword():
         f.close()
     return keyword
 
+
+def lines(keyword):
+    list = ["-" for i in keyword]
+    list = "".join(list)
+    return list
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
