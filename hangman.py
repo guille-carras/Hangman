@@ -1,5 +1,68 @@
 
+from logging import exception
+from operator import ne
 import random
+import os
+
+
+HANGMAN_IMAGES = ['''
+
+                                                    +---+
+                                                    |   |
+                                                        |
+                                                        |
+                                                        |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                        |
+                                                        |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                    |   |
+                                                        |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                   /|   |
+                                                        |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                   /|\  |
+                                                        |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                  /|\  |
+                                                   /    |
+                                                        |
+                                                  =========''', '''
+                                                 
+                                                    +---+
+                                                    |   |
+                                                    O   |
+                                                   /|\  |
+                                                   / \  |
+                                                        |
+                                                  =========''']
+
 
 def read_data_search_keyword():
     try:
@@ -20,9 +83,63 @@ def lines(keyword):
     return list
 
 
-def main():
-    pass
+def clean_screen(): 
+    if os.name == "posix":
+        os.system ("clear")
+    elif os.name == "ce" or os.name == "nt" or os.name == "dos":
+        os.system ("cls")
 
+
+def print_head(count_wrong):
+    label_head = """
+ __      __        _                              _             _  _                                            
+ \ \    / /  ___  | |  __   ___   _ __    ___    | |_   ___    | || |  __ _   _ _    __ _   _ __    __ _   _ _  
+  \ \/\/ /  / -_) | | / _| / _ \ | '  \  / -_)   |  _| / _ \   | __ | / _` | | ' \  / _` | | '  \  / _` | | ' \ 
+   \_/\_/   \___| |_| \__| \___/ |_|_|_| \___|    \__| \___/   |_||_| \__,_| |_||_| \__, | |_|_|_| \__,_| |_||_|
+                                                                                    |___/                       
+"""
+    print(label_head)
+    print("=" *46 + " Adivina la palabra " + "="*47)
+    print(HANGMAN_IMAGES[count_wrong],"\n")
+
+def comprube(letter, keyword, count_wrong, hidden):
+    if letter in keyword:
+        index = []
+        for i in range(len(keyword)):
+            if letter == keyword[i]:
+                index.append(i)
+        hidden = [i for i in hidden]
+        for i in index:
+            hidden[i] = letter
+        hidden = " ".join(hidden)
+        hidden = hidden.replace(" ", "")
+        return hidden
+    else:
+        count_wrong = count_wrong + 1
+        return hidden
+
+def main():
+    win = False
+    lose = False
+    count_wrong = 0
+    secret_word = read_data_search_keyword()
+    hidden = lines(secret_word)
+    while win == False and lose == False:
+        print_head(count_wrong)
+        print("+"*50 + "   " + hidden + "   " +"+"*50)
+        letter = input("Escriba una letra: ").lower()
+        if letter == "*":
+            break
+        hidden = comprube(letter, secret_word, count_wrong, hidden)
+        if hidden == secret_word:
+            win = True
+        elif count_wrong > len(HANGMAN_IMAGES):
+            lose = True
+        clean_screen()
+    if win == True:
+        print(f"¡Ganaste!, la palabra era '{secret_word}'.")
+    elif lose == True:
+        print(f"¡Perdiste!, la palabra era '{secret_word}'.")
 
 if __name__ == "__main__":
     main()
