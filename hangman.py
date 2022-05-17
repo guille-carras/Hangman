@@ -21,7 +21,8 @@ HANGMAN_IMAGES = ['''
                                                         |
                                                         |
                                                         |
-                                                  =========''', '''
+                                                  =========
+                                               Acierta, ¡carajo!''', '''
                                                  
                                                     +---+
                                                     |   |
@@ -29,7 +30,8 @@ HANGMAN_IMAGES = ['''
                                                     |   |
                                                         |
                                                         |
-                                                  =========''', '''
+                                                  =========
+                                              ¡Ave María purísima!''', '''
                                                  
                                                     +---+
                                                     |   |
@@ -37,7 +39,8 @@ HANGMAN_IMAGES = ['''
                                                    /|   |
                                                         |
                                                         |
-                                                  =========''', '''
+                                                  =========
+                                ¡Definitivamente no me voy a tomar las frías el FDS!''', '''
                                                  
                                                     +---+
                                                     |   |
@@ -45,15 +48,17 @@ HANGMAN_IMAGES = ['''
                                                    /|\  |
                                                         |
                                                         |
-                                                  =========''', '''
+                                                  =========
+                                       ¡Me tocó el más manco de todos!''', '''
                                                  
                                                     +---+
                                                     |   |
                                                     O   |
-                                                  /|\  |
+                                                   /|\  |
                                                    /    |
                                                         |
-                                                  =========''', '''
+                                                  =========
+                                        ¡No te pondré en el testamento!''', '''
                                                  
                                                     +---+
                                                     |   |
@@ -61,7 +66,8 @@ HANGMAN_IMAGES = ['''
                                                    /|\  |
                                                    / \  |
                                                         |
-                                                  =========''']
+                                                  =========
+                                              ¡Gracias por nada! ''']
 
 
 def read_data_search_keyword():
@@ -90,6 +96,15 @@ def clean_screen():
         os.system ("cls")
 
 
+def play_again():
+    repeat = input("Quieres volver a jugar, presiona [S]í o [No]: ").lower()
+    if repeat ==  "s":
+        main()
+    else:
+        print("¡Nos vemos luego!")
+
+
+
 def print_head(count_wrong):
     label_head = """
  __      __        _                              _             _  _                                            
@@ -102,7 +117,7 @@ def print_head(count_wrong):
     print("=" *46 + " Adivina la palabra " + "="*47)
     print(HANGMAN_IMAGES[count_wrong],"\n")
 
-def comprube(letter, keyword, count_wrong, hidden):
+def comprube(letter, keyword, count_w, hidden):
     if letter in keyword:
         index = []
         for i in range(len(keyword)):
@@ -113,10 +128,11 @@ def comprube(letter, keyword, count_wrong, hidden):
             hidden[i] = letter
         hidden = " ".join(hidden)
         hidden = hidden.replace(" ", "")
-        return hidden
+        return hidden, count_w
     else:
-        count_wrong = count_wrong + 1
-        return hidden
+        count_w = count_w + 1
+        return hidden, count_w
+
 
 def main():
     win = False
@@ -131,15 +147,21 @@ def main():
         if letter == "*":
             break
         hidden = comprube(letter, secret_word, count_wrong, hidden)
+        count_wrong = int(hidden[1])
+        hidden = hidden[0]
         if hidden == secret_word:
             win = True
-        elif count_wrong > len(HANGMAN_IMAGES):
+        elif count_wrong > len(HANGMAN_IMAGES) - 1:
             lose = True
         clean_screen()
     if win == True:
         print(f"¡Ganaste!, la palabra era '{secret_word}'.")
+        play_again()
     elif lose == True:
         print(f"¡Perdiste!, la palabra era '{secret_word}'.")
+        play_again()
+        
+
 
 if __name__ == "__main__":
     main()
